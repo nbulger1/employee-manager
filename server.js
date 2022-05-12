@@ -156,81 +156,101 @@ const addEmployee = () => {
       },
     ])
     .then((response) => {
-      console.log(response);
       db.query(
-        `INSERT INTO employee ? SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id`,
-        {
-          first_name: response.newEmployeeFirst,
-          last_name: response.newEmployeeLast,
-        },
+        `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${response.newEmployeeFirst}", "${response.newEmployeeLast}", (SELECT id FROM role WHERE title = "${response.newEmployeeRole}"), (SELECT id FROM manager WHERE name = "${response.newEmployeeManager}"))`,
         (err, result) => {
           if (err) {
             console.log(err);
           }
-          console.log("Added New Employee!");
-          console.table(result);
-          //   db.query(
-          //     `INSERT INTO ${result} SET ?`,
-          //     {
-          //       first_name: response.newEmployeeFirst,
-          //       last_name: response.newEmployeeLast,
-          //       title: response.newEmployeeRole,
-          //     },
-          //     function (err) {
-          //       if (err) {
-          //         console.log(err);
-          //       }
-          //       console.log("Added New Employee!");
-          //     }
-          //   );
+          console.log(`Added ${response.newEmployeeFirst} to the team!`);
         }
       );
     });
 };
 
 const updateEmployeeRole = () => {
+  let roleList = [];
+  let employeeList = [];
+
+  db.query(`SELECT title FROM role`, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    for (i = 0; i < result.length; i++) {
+      roleList.push(result[i].title);
+    }
+    return roleList;
+  });
+
+  db.query(`SELECT last_name FROM employee`, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    for (i = 0; i < result.length; i++) {
+      employeeList.push(result[i].last_name);
+    }
+    return employeeList;
+  });
   inquirer
     .prompt([
       {
         type: "rawlist",
         message: "Which employee would you like to update?",
         name: "updatedRoleName",
-        choices: [],
+        choices: employeeList,
       },
       {
         type: "rawlist",
         message: "Which role do you want to assign to this employee?",
         name: "updatedRole",
-        choices: [],
+        choices: roleList,
       },
     ])
     .then(response);
 };
 
 const addRole = () => {
+  let departmentList = [];
+
+  db.query(`SELECT name FROM department`, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    for (i = 0; i < result.length; i++) {
+      departmentList.push(result[i].name);
+    }
+    return departmentList;
+  });
   inquirer
     .prompt([
       {
         type: "input",
         message: "What is the name of the role?",
         name: "newRoleName",
-        when: (response) => response.userDecision == "Add Role",
       },
       {
         type: "input",
         message: "What is the salary of the role?",
         name: "newRoleSalary",
-        when: (response) => response.userDecision == "Add Role",
       },
       {
         type: "rawlist",
         message: "What is the department does the role belong to?",
         name: "newRoleDept",
-        choices: [],
-        when: (response) => response.userDecision == "Add Role",
+        choices: departmentList,
       },
     ])
-    .then(response);
+    .then((response) => {
+      db.query(
+        `INSERT INTO role (title, salary, department_id) VALUES ("${response.newRoleName}", "${response.newRoleSalary}", (SELECT id FROM department WHERE name = "${response.newRoleDept}"))`,
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(`Added ${response.newRoleName} to the roles list!`);
+        }
+      );
+    });
 };
 
 const addDepartment = () => {
