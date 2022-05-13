@@ -80,20 +80,30 @@ const intialQuestion = () => {
 };
 
 const viewAllEmployees = () => {
-  db.query(`SELECT * from employee`, (err, result) => {
+  const sql = `SELECT e.id AS id, e.first_name AS first_name, e.last_name AS last_name, role.title AS title, department.name AS department, role.salary AS salary, m.last_name AS manager
+  FROM employee e
+  LEFT JOIN employee m
+  ON m.id = e.manager_id
+  JOIN role
+  ON e.role_id = role.id
+  JOIN department
+  ON role.department_id = department.id`;
+  db.query(sql, (err, result) => {
     if (err) {
       console.log(err);
     }
     console.table(result);
+    intialQuestion();
   });
 };
 
 const viewAllRoles = () => {
-  db.query(`SELECT id, title FROM role`, (err, result) => {
+  db.query(`SELECT * FROM role`, (err, result) => {
     if (err) {
       console.log(err);
     }
     console.table(result);
+    intialQuestion();
   });
 };
 
@@ -103,6 +113,7 @@ const viewAllDepartments = () => {
       console.log(err);
     }
     console.table(result);
+    intialQuestion();
   });
 };
 
@@ -110,7 +121,7 @@ const addEmployee = () => {
   let roleList = [];
   let managerList = [];
 
-  db.query(`SELECT title from role`, (err, result) => {
+  db.query(`SELECT title FROM role`, (err, result) => {
     if (err) {
       console.log(err);
     }
@@ -120,15 +131,18 @@ const addEmployee = () => {
     return roleList;
   });
 
-  db.query(`SELECT name from manager`, (err, result) => {
-    if (err) {
-      console.log(err);
+  db.query(
+    `SELECT last_name manager_id FROM employee WHERE manager_id IS NULL`,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      for (i = 0; i < result.length; i++) {
+        managerList.push(result[i].manager_id);
+      }
+      return managerList;
     }
-    for (i = 0; i < result.length; i++) {
-      managerList.push(result[i].name);
-    }
-    return managerList;
-  });
+  );
 
   inquirer
     .prompt([
@@ -156,31 +170,45 @@ const addEmployee = () => {
       },
     ])
     .then((response) => {
-      db.query(
-        `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${response.newEmployeeFirst}", "${response.newEmployeeLast}", (SELECT id FROM role WHERE title = "${response.newEmployeeRole}"), (SELECT id FROM manager WHERE name = "${response.newEmployeeManager}"))`,
-        (err, result) => {
+      console.log(response);
+      const sql = `INSERT INTO employee (first_name, last_name, role_id) 
+      VALUES (?, ?, (SELECT id FROM role WHERE title = ?))`;
+      const params = [
+        response.newEmployeeFirst,
+        response.newEmployeeLast,
+        response.newEmployeeRole,
+      ];
+
+      db.query(sql, params, (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        const sqlTwo = `SELECT id FROM employee WHERE last_name = ?`;
+        const managerLast = response.newEmployeeManager;
+        let managerId;
+        db.query(sqlTwo, managerLast, (err, result) => {
           if (err) {
             console.log(err);
           }
-          console.log(`Added ${response.newEmployeeFirst} to the team!`);
-        }
-      );
+          managerId = result[0].id;
+
+          const sqlThree = `UPDATE employee SET manager_id = ? WHERE last_name = ?`;
+          const paramsTwo = [managerId, response.newEmployeeLast];
+          db.query(sqlThree, paramsTwo, (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log(`Added ${response.newEmployeeFirst} to the team!`);
+            intialQuestion();
+          });
+        });
+      });
     });
 };
 
 const updateEmployeeRole = () => {
   let roleList = [];
   let employeeList = [];
-
-  db.query(`SELECT title FROM role`, (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-    for (i = 0; i < result.length; i++) {
-      roleList.push(result[i].title);
-    }
-    return roleList;
-  });
 
   db.query(`SELECT last_name FROM employee`, (err, result) => {
     if (err) {
@@ -189,24 +217,45 @@ const updateEmployeeRole = () => {
     for (i = 0; i < result.length; i++) {
       employeeList.push(result[i].last_name);
     }
-    return employeeList;
+    // return employeeList;
+    db.query(`SELECT title FROM role`, (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      for (i = 0; i < result.length; i++) {
+        roleList.push(result[i].title);
+      }
+      // return roleList;
+
+      inquirer
+        .prompt([
+          {
+            type: "rawlist",
+            message: "Which employee would you like to update?",
+            name: "updatedRoleName",
+            choices: employeeList,
+          },
+          {
+            type: "rawlist",
+            message: "Which role do you want to assign to this employee?",
+            name: "updatedRole",
+            choices: roleList,
+          },
+        ])
+        .then((response) => {
+          const sql = `UPDATE employee SET role_id = (SELECT id FROM role WHERE title = ?) WHERE last_name = ?`;
+          const params = [response.updatedRole, response.updatedRoleName];
+
+          db.query(sql, params, (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log(`Updated ${response.updatedRoleName}'s role!`);
+            intialQuestion();
+          });
+        });
+    });
   });
-  inquirer
-    .prompt([
-      {
-        type: "rawlist",
-        message: "Which employee would you like to update?",
-        name: "updatedRoleName",
-        choices: employeeList,
-      },
-      {
-        type: "rawlist",
-        message: "Which role do you want to assign to this employee?",
-        name: "updatedRole",
-        choices: roleList,
-      },
-    ])
-    .then(response);
 };
 
 const addRole = () => {
@@ -241,15 +290,19 @@ const addRole = () => {
       },
     ])
     .then((response) => {
-      db.query(
-        `INSERT INTO role (title, salary, department_id) VALUES ("${response.newRoleName}", "${response.newRoleSalary}", (SELECT id FROM department WHERE name = "${response.newRoleDept}"))`,
-        (err, result) => {
-          if (err) {
-            console.log(err);
-          }
-          console.log(`Added ${response.newRoleName} to the roles list!`);
+      const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, (SELECT id FROM department WHERE name = ?))`;
+      const params = [
+        response.newRoleName,
+        response.newRoleSalary,
+        response.newRoleDept,
+      ];
+      db.query(sql, params, (err, result) => {
+        if (err) {
+          console.log(err);
         }
-      );
+        console.log(`Added ${response.newRoleName} to the roles list!`);
+        intialQuestion();
+      });
     });
 };
 
@@ -264,19 +317,22 @@ const addDepartment = () => {
     ])
     .then((response) => {
       console.log(response);
-      db.query(
-        `INSERT INTO department SET ?`,
-        {
-          name: response.newDeptName,
-        },
-        function (err) {
-          if (err) {
-            console.log(err);
-          }
-          console.log("Added New Department!");
+      const sql = `INSERT INTO department (name) VALUES (?)`;
+      const params = response.newDeptName;
+
+      db.query(sql, params, function (err) {
+        if (err) {
+          console.log(err);
         }
-      );
+        console.log("Added New Department!");
+        intialQuestion();
+      });
     });
+};
+
+const quit = () => {
+  console.log("Thank you! Bye!");
+  process.kill(process.pid, "SIGTERM");
 };
 
 intialQuestion();
