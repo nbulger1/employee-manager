@@ -1,5 +1,5 @@
 const mysql = require("mysql2");
-// const { initialQuestion } = require("./initialQuestion.js");
+const { initialQuestion } = require("./initialQuestion.js");
 const inquirer = require("inquirer");
 
 const db = mysql.createConnection(
@@ -12,7 +12,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the employee_db database.`)
 );
 
-const updateEmployeeRole = () => {
+const updateEmployeeRole = (initialQuestion) => {
   let roleList = [];
   let employeeList = [];
 
@@ -56,7 +56,7 @@ const updateEmployeeRole = () => {
               console.log(err);
             }
             console.log(`Updated ${response.updatedRoleName}'s role!`);
-            // initialQuestion();
+            initialQuestion();
           });
         });
     });

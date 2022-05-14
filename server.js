@@ -29,19 +29,19 @@ console.log(
   }).render()
 );
 
-let state = "start";
-// initialQuestion();
+// let state = "start";
+initialQuestion();
 
-function init() {
-  state = "start";
-  if (state == "start") {
-    state = "stop";
-    return initialQuestion();
-  }
-}
+// function init() {
+//   state = "start";
+//   if (state == "start") {
+//     state = "stop";
+//     return initialQuestion();
+//   }
+// }
 
 //initialize the app
-init();
+// init();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

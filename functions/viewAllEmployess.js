@@ -1,6 +1,6 @@
-const mysql = require("mysql2");
 const { initialQuestion } = require("./initialQuestion.js");
-// const { initialQuestion } = require("./initialQuestion");
+
+const mysql = require("mysql2");
 
 const db = mysql.createConnection(
   {
@@ -12,7 +12,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the employee_db database.`)
 );
 
-const viewAllEmployees = () => {
+const viewAllEmployees = (initialQuestion) => {
   const sql = `SELECT e.id AS id, e.first_name AS first_name, e.last_name AS last_name, role.title AS title, department.name AS department, role.salary AS salary, m.last_name AS manager
     FROM employee e
     LEFT JOIN employee m

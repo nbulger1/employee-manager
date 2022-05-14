@@ -1,5 +1,5 @@
 const mysql = require("mysql2");
-// const { initialQuestion } = require("./initialQuestion.js");
+const { initialQuestion } = require("./initialQuestion.js");
 const inquirer = require("inquirer");
 
 const db = mysql.createConnection(
@@ -12,7 +12,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the employee_db database.`)
 );
 
-const addDepartment = () => {
+const addDepartment = (initialQuestion) => {
   inquirer
     .prompt([
       {
@@ -31,7 +31,7 @@ const addDepartment = () => {
           console.log(err);
         }
         console.log("Added New Department!");
-        // initialQuestion();
+        initialQuestion();
       });
     });
 };

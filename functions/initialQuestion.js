@@ -31,19 +31,19 @@ const initialQuestion = () => {
       const { userDecision } = response;
 
       if (userDecision == "View All Employees") {
-        viewAllEmployees();
+        viewAllEmployees(initialQuestion);
       } else if (userDecision == "Add Employee") {
-        addEmployee();
+        addEmployee(initialQuestion);
       } else if (userDecision == "Update Employee Role") {
-        updateEmployeeRole();
+        updateEmployeeRole(initialQuestion);
       } else if (userDecision == "View All Roles") {
-        viewAllRoles();
+        viewAllRoles(initialQuestion);
       } else if (userDecision == "Add Role") {
         addRole();
       } else if (userDecision == "View All Departments") {
-        viewAllDepartments();
+        viewAllDepartments(initialQuestion);
       } else if (userDecision == "Add Department") {
-        addDepartment();
+        addDepartment(initialQuestion);
       } else if (userDecision == "Quit") {
         quit();
       }

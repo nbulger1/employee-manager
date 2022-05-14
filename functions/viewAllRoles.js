@@ -1,5 +1,5 @@
 const mysql = require("mysql2");
-// const { initialQuestion } = require("./initialQuestion.js");
+const { initialQuestion } = require("./initialQuestion.js");
 
 const db = mysql.createConnection(
   {
@@ -11,14 +11,14 @@ const db = mysql.createConnection(
   console.log(`Connected to the employee_db database.`)
 );
 
-const viewAllRoles = () => {
+const viewAllRoles = (initialQuestion) => {
   const sql = `SELECT role.id AS id, role.title AS title, role.salary AS salary, department.name AS department FROM role JOIN department ON department.id = role.department_id`;
   db.query(sql, (err, result) => {
     if (err) {
       console.log(err);
     }
     console.table(result);
-    // initialQuestion();
+    initialQuestion();
   });
 };
 
