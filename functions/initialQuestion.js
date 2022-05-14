@@ -47,6 +47,7 @@ const initialQuestion = () => {
       } else if (userDecision == "Quit") {
         quit();
       }
+      return response;
     });
 };
 

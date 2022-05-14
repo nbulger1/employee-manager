@@ -1,5 +1,5 @@
 const mysql = require("mysql2");
-const { initialQuestion } = require("./initialQuestion");
+const { initialQuestion } = require("./initialQuestion.js");
 // const { initialQuestion } = require("./initialQuestion");
 
 const db = mysql.createConnection(
@@ -26,7 +26,7 @@ const viewAllEmployees = () => {
       console.log(err);
     }
     console.table(result);
-    // initialQuestion();
+    initialQuestion();
   });
 };
 

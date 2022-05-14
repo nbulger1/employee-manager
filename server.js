@@ -7,6 +7,7 @@ const config = require("./package.json");
 
 //require my initial function
 const { initialQuestion } = require("./functions/initialQuestion.js");
+const { response } = require("express");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -14,7 +15,6 @@ const app = express();
 // Express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(express.static("public"));
 
 console.log(
   logo({
@@ -29,7 +29,19 @@ console.log(
   }).render()
 );
 
-initialQuestion();
+let state = "start";
+// initialQuestion();
+
+function init() {
+  state = "start";
+  if (state == "start") {
+    state = "stop";
+    return initialQuestion();
+  }
+}
+
+//initialize the app
+init();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
