@@ -2,10 +2,15 @@
 
 ## Description
 
+Sometimes developers have to create interfaces that allow non-developers an accessible way to interact with information that has been stored in a database. I was tasked to create an command-line application that could manage an employee database housed in mySQL. The application was to use Node.js, Inquirer, and MySQL.
+
 ## Table of Contents
 
 - [User Story](#user-story)
 - [Acceptance Criteria](#acceptance-criteria)
+- [Initial Question](#initial-question)
+- [SQL Queries](#sql-queries)
+- [Inquirer Prompts](#inquirer-prompts)
 - [License](#license)
 - [Link](#link)
 
@@ -38,3 +43,13 @@ THEN I am prompted to enter the employee’s first name, last name, role, and ma
 WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 ```
+
+## Initial Question
+
+## SQL Queries
+
+## Inquirer Prompts
+
+## License
+
+## Link
