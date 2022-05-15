@@ -6,9 +6,8 @@ const logo = require("asciiart-logo");
 const config = require("./package.json");
 
 //require my initial function
-const { initialQuestion } = require("./functions/initialQuestion.js");
+const { initialQuestion } = require("./lib/initialQuestion.js");
 const { response } = require("express");
-
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -29,19 +28,7 @@ console.log(
   }).render()
 );
 
-// let state = "start";
 initialQuestion();
-
-// function init() {
-//   state = "start";
-//   if (state == "start") {
-//     state = "stop";
-//     return initialQuestion();
-//   }
-// }
-
-//initialize the app
-// init();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
