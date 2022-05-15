@@ -10,8 +10,8 @@ Sometimes developers have to create interfaces that allow non-developers an acce
 - [Acceptance Criteria](#acceptance-criteria)
 - [Database Creation](#database-creation)
 - [Initial Question](#initial-question)
-- [SQL Queries](#sql-queries)
-- [Inquirer Prompts](#inquirer-prompts)
+- [Array Building](#array-building)
+- [User Options](#user-options)
 - [License](#license)
 - [Link](#link)
 
@@ -71,11 +71,11 @@ Order to start the application, I created the initial function that would handle
 
 This function is called, initially, in the server file to begin the employee management system. It is then called again at the end of each option function to present the options again after a finished request unless the user selects "Quit".
 
-## SQL Queries
+## Array Building
 
 All the mySQL queries that may need to run to create the arrays necessary for certain user requests were all compiled into a single file in the "lib" folder. These functions were written such that they returned a promise so that they could be used in async/await to ensure that all the database queries were completed prior to other inquirer functions.
 
-## Inquirer Prompts
+## User Options
 
 All of the functions called in the "Initial Question" function were compiled into a single file in the "lib" folder. Each function that handles a "view" request from the user queries the database and displays the selected data using the console.table package to improve the visual representation. Each function that handles an add, update, or delete, gathers the necessary arrays from the database queries and then asks the user for the information required to complete the request. Once the data has been gathered, the function using one of the CRUD queries to add to, update, or deleted from the employee_db database.
 
