@@ -87,4 +87,4 @@ This project is protected under the MIT License.
 
 ## Link
 
-See the following for a link to the walkthrough video of the application:
+See the following for a link to the walkthrough video of the application: https://youtu.be/wNE4Bwttk6o
