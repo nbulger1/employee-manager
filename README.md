@@ -8,6 +8,7 @@ Sometimes developers have to create interfaces that allow non-developers an acce
 
 - [User Story](#user-story)
 - [Acceptance Criteria](#acceptance-criteria)
+- [Database Creation](#database-creation)
 - [Initial Question](#initial-question)
 - [SQL Queries](#sql-queries)
 - [Inquirer Prompts](#inquirer-prompts)
@@ -44,12 +45,46 @@ WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 ```
 
+## Database Creation
+
+To create the initial database I created a "db" folder that houses the schema.sql and seeds.sql files. The schema.sql creates three different tables - department, role, employee - based on the following outline:
+
+![Database schema includes tables labeled “employee,” role,” and “department.”](./assets/images/schema_overview.png)
+
+The seeds.sql file then fills in each of the three tables with some preliminary data to work with development and for example purposes.
+
 ## Initial Question
+
+Order to start the application, I created the initial function that would handle the list of options for the user based on the acceptance criteria, as well as a few extra options including:
+
+- View All Employees
+- Add Employee
+- Update Employee Role
+- View All Roles
+- Add Role
+- View All Departments
+- Add Departments
+- Update Employee Manager
+- View Employees By Manager
+- Delete an Employee
+- Quit
+
+This function is called, initially, in the server file to begin the employee management system. It is then called again at the end of each option function to present the options again after a finished request unless the user selects "Quit".
 
 ## SQL Queries
 
+All the mySQL queries that may need to run to create the arrays necessary for certain user requests were all compiled into a single file in the "lib" folder. These functions were written such that they returned a promise so that they could be used in async/await to ensure that all the database queries were completed prior to other inquirer functions.
+
 ## Inquirer Prompts
+
+All of the functions called in the "Initial Question" function were compiled into a single file in the "lib" folder. Each function that handles a "view" request from the user queries the database and displays the selected data using the console.table package to improve the visual representation. Each function that handles an add, update, or delete, gathers the necessary arrays from the database queries and then asks the user for the information required to complete the request. Once the data has been gathered, the function using one of the CRUD queries to add to, update, or deleted from the employee_db database.
 
 ## License
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+This project is protected under the MIT License.
+
 ## Link
+
+See the following for a link to the walkthrough video of the application:
