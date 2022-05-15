@@ -87,4 +87,8 @@ This project is protected under the MIT License.
 
 ## Link
 
-See the following for a link to the walkthrough video of the application: https://youtu.be/wNE4Bwttk6o
+See the following for a link to the walkthrough video of the application: https://youtu.be/3xTIREtTkSY
+
+Screenshot of "Home" Screen
+
+![Screenshot of the application "home" screen that appears when the user starts up the app in command-line using "node server.js"](./assets/images/employee_manager_screenshot.png)
